@@ -25,6 +25,12 @@ with customers as (
 
     ),
 
+    order_payment as (
+
+        select * 
+        from {{ ref('fct_orders') }}
+    ),
+
     final as (
         select customers.customer_id,
             customers.first_name,
@@ -34,6 +40,8 @@ with customers as (
             coalesce(customer_orders.number_of_orders, 0) as number_of_orders
         from customers
         left outer join customer_orders using(customer_id)
+        left outer join order_payment using(customer_id)
+        
     )
 select * 
 from final
